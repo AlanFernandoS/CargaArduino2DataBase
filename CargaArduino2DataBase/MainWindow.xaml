@@ -47,12 +47,9 @@
             <Slider Grid.Column="1" Minimum="50" Maximum="5000"></Slider>
             
         </Grid>
-        <UniformGrid Grid.Row="3" Columns="2">
-            <DataGrid Name="TablaDeRegistrosSerial" Grid.Row="3" Margin="10"></DataGrid>
-            <DataGrid Name="TablaDeDatos" Grid.Row="3" Margin="10"></DataGrid>
-        </UniformGrid>
-            
+        <UniformGrid Grid.Row="3" Columns="2"/>
 
-        
+
+
     </Grid>
 </Window>

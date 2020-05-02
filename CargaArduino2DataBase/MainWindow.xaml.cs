@@ -29,16 +29,16 @@ namespace CargaArduino2DataBase
         CircularArray<ComandoArduino> EventosEnElDT = new CircularArray<ComandoArduino>(30);
         List<ComandoArduino> ListaDeEventos = new List<ComandoArduino>();
         List<string> ListaDeEventosSeriales = new List<string>();
-        System.Timers.Timer MyTimer2Update = new System.Timers.Timer();
+        //System.Timers.Timer MyTimer2Update = new System.Timers.Timer();
         public MainWindow()
         {
             InitializeComponent();
             BotonActualizar.Click += BotonActualizar_Click;
             BotonConectar.Click += BotonConectar_Click;
             ActualizaPuertos();
-            TablaDeRegistrosSerial.AutoGenerateColumns = true;
-            TablaDeRegistrosSerial.ItemsSource = ListaDeEventosSeriales;
-            TablaDeDatos.ItemsSource = ListaDeEventos;
+            //TablaDeRegistrosSerial.AutoGenerateColumns = true;
+            //TablaDeRegistrosSerial.ItemsSource = ListaDeEventosSeriales;
+            //TablaDeDatos.ItemsSource = ListaDeEventos;
             //MyTimer2Update.AutoReset = true;
             //MyTimer2Update.Interval = (500);
             //MyTimer2Update.Elapsed += MyTimer2Update_Elapsed;
@@ -104,8 +104,8 @@ namespace CargaArduino2DataBase
         private void PuertoSerial_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
-            var Comandos = indata.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+            string indata = sp.ReadLine();
+            //var Comandos = indata.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
             foreach (string cm in Comandos)
             {
                 var Trimmed = cm.Trim();
@@ -126,19 +126,19 @@ namespace CargaArduino2DataBase
 
                     }
 
-                    Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        try
-                        {
-                            TablaDeDatos.Items.Refresh();
-                            TablaDeRegistrosSerial.Items.Refresh();
-                        }
-                        catch
-                        {
+                    //Dispatcher.BeginInvoke((Action)(() =>
+                    //{
+                    //    try
+                    //    {
+                    //        TablaDeDatos.Items.Refresh();
+                    //        TablaDeRegistrosSerial.Items.Refresh();
+                    //    }
+                    //    catch
+                    //    {
 
-                        }
+                    //    }
 
-                    }));
+                    //}));
 
                 }
             }
@@ -160,15 +160,15 @@ namespace CargaArduino2DataBase
             //Console.WriteLine("Data Received:");
             //Console.Write(indata);
         }
-        private void ConvertCilindricalOnList()
-        {
-            ListaDeEventos.Clear();
-            for (int i = 0; i < 30; i++)
-            {
-                ListaDeEventos.Add(EventosEnElDT.Array[i]);
-            }
-            TablaDeDatos.Items.Refresh();
-        }
+        //private void ConvertCilindricalOnList()
+        //{
+        //    ListaDeEventos.Clear();
+        //    for (int i = 0; i < 30; i++)
+        //    {
+        //        ListaDeEventos.Add(EventosEnElDT.Array[i]);
+        //    }
+        //    TablaDeDatos.Items.Refresh();
+        //}
 
         private void BotonActualizar_Click(object sender, RoutedEventArgs e)
         {
