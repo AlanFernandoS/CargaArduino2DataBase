@@ -36,39 +36,10 @@ namespace CargaArduino2DataBase
             BotonActualizar.Click += BotonActualizar_Click;
             BotonConectar.Click += BotonConectar_Click;
             ActualizaPuertos();
-            //TablaDeRegistrosSerial.AutoGenerateColumns = true;
-            //TablaDeRegistrosSerial.ItemsSource = ListaDeEventosSeriales;
-            //TablaDeDatos.ItemsSource = ListaDeEventos;
-            //MyTimer2Update.AutoReset = true;
-            //MyTimer2Update.Interval = (500);
-            //MyTimer2Update.Elapsed += MyTimer2Update_Elapsed;
-            //MyTimer2Update.Start();
+
         }
 
-        //private void MyTimer2Update_Elapsed(object sender, ElapsedEventArgs e)
-        //{
 
-        //    Dispatcher.BeginInvoke((Action)(() =>
-        //    {
-        //        try
-        //        {
-        //            TablaDeDatos.Items.Refresh();
-        //            TablaDeRegistrosSerial.Items.Refresh();
-        //        }
-        //        catch
-        //        {
-
-        //        }
-        //        //Monitor.Enter(ListaDeEventosSeriales);
-        //        //TablaDeRegistrosSerial.Items.DeferRefresh();
-        //        //Monitor.Exit(ListaDeEventosSeriales);
-        //        //Monitor.Enter(ListaDeEventos);
-        //        //TablaDeDatos.Items.DeferRefresh();
-        //        //Monitor.Exit(ListaDeEventos);
-        //    }));
-
-
-        //}
 
         private void BotonConectar_Click(object sender, RoutedEventArgs e)
         {
@@ -106,69 +77,25 @@ namespace CargaArduino2DataBase
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadLine();
             //var Comandos = indata.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
-            foreach (string cm in Comandos)
+            var Trimmed = indata.Trim();
+            if (Trimmed.Length > 0 && Trimmed.StartsWith("{"))
             {
-                var Trimmed = cm.Trim();
-                if (Trimmed.Length > 0 && Trimmed.StartsWith("{"))
+                try
                 {
-                    try
-                    {
-                        Monitor.Enter(ListaDeEventosSeriales);
-                        ListaDeEventosSeriales.Add(Trimmed);
-                        Monitor.Exit(ListaDeEventosSeriales);
-                        var CmS = JsonConvert.DeserializeObject<ComandoArduino>(Trimmed);
-                        Monitor.Enter(ListaDeEventos);
-                        ListaDeEventos.Add(CmS);
-                        Monitor.Exit(ListaDeEventos);
-                    }
-                    catch
-                    {
-
-                    }
-
-                    //Dispatcher.BeginInvoke((Action)(() =>
-                    //{
-                    //    try
-                    //    {
-                    //        TablaDeDatos.Items.Refresh();
-                    //        TablaDeRegistrosSerial.Items.Refresh();
-                    //    }
-                    //    catch
-                    //    {
-
-                    //    }
-
-                    //}));
-
+                    Monitor.Enter(ListaDeEventosSeriales);
+                    ListaDeEventosSeriales.Add(Trimmed);
+                    Monitor.Exit(ListaDeEventosSeriales);
+                    var CmS = JsonConvert.DeserializeObject<ComandoArduino>(Trimmed);
+                    Monitor.Enter(ListaDeEventos);
+                    ListaDeEventos.Add(CmS);
+                    Monitor.Exit(ListaDeEventos);
+                }
+                catch
+                {
                 }
             }
 
-            try
-            {
-
-                //var ComandoPorSerial = JsonConvert.DeserializeObject<List<ComandoArduino>>(indata);
-                //foreach (ComandoArduino Cm in ComandoPorSerial)
-                //{
-                //    EventosEnElDT.Push(Cm);
-                //}
-                //ConvertCilindricalOnList();
-            }
-            catch (SystemException ER)
-            {
-                MessageBox.Show(ER.Message.ToString());
-            }
-            //Console.WriteLine("Data Received:");
-            //Console.Write(indata);
         }
-        //private void ConvertCilindricalOnList()
-        //{
-        //    ListaDeEventos.Clear();
-        //    for (int i = 0; i < 30; i++)
-        //    {
-        //        ListaDeEventos.Add(EventosEnElDT.Array[i]);
-        //    }
-        //    TablaDeDatos.Items.Refresh();
-        //}
 
         private void BotonActualizar_Click(object sender, RoutedEventArgs e)
         {
@@ -204,62 +131,6 @@ namespace CargaArduino2DataBase
         public string CMD { get => cMD; set => cMD = value; }
         public string Table { get => table; set => table = value; }
         public string Data { get => data; set => data = value; }
-    }
-    public class CircularArray<T>
-    {
-        private readonly T[] _baseArray;
-        private readonly T[] _facadeArray;
-        private int _head;
-        private bool _isFilled;
-
-        public CircularArray(int length)
-        {
-            _baseArray = new T[length];
-            _facadeArray = new T[length];
-        }
-
-        public T[] Array
-        {
-            get
-            {
-                int pos = _head;
-                for (int i = 0; i < _baseArray.Length; i++)
-                {
-                    Math.DivRem(pos, _baseArray.Length, out pos);
-                    _facadeArray[i] = _baseArray[pos];
-                    pos++;
-                }
-                return _facadeArray;
-            }
-        }
-
-        public T[] BaseArray
-        {
-            get { return _baseArray; }
-        }
-
-        public bool IsFilled
-        {
-            get { return _isFilled; }
-        }
-
-        public void Push(T value)
-        {
-            if (!_isFilled && _head == _baseArray.Length - 1)
-                _isFilled = true;
-
-            Math.DivRem(_head, _baseArray.Length, out _head);
-            _baseArray[_head] = value;
-            _head++;
-        }
-
-        public T Get(int indexBackFromHead)
-        {
-            int pos = _head - indexBackFromHead - 1;
-            pos = pos < 0 ? pos + _baseArray.Length : pos;
-            Math.DivRem(pos, _baseArray.Length, out pos);
-            return _baseArray[pos];
-        }
     }
 }
 
