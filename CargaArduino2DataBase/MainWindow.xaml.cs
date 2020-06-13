@@ -26,9 +26,10 @@ namespace CargaArduino2DataBase
     public partial class MainWindow : Window
     {
         SerialPort PuertoSerial = new SerialPort();
-        CircularArray<ComandoArduino> EventosEnElDT = new CircularArray<ComandoArduino>(30);
         List<ComandoArduino> ListaDeEventos = new List<ComandoArduino>();
         List<string> ListaDeEventosSeriales = new List<string>();
+        List<DataComplete> ReporteDeComandos = new List<DataComplete>();
+        Int32 NumRegSend = 0;
         //System.Timers.Timer MyTimer2Update = new System.Timers.Timer();
         public MainWindow()
         {
@@ -36,16 +37,13 @@ namespace CargaArduino2DataBase
             BotonActualizar.Click += BotonActualizar_Click;
             BotonConectar.Click += BotonConectar_Click;
             ActualizaPuertos();
-
         }
-
-
 
         private void BotonConectar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (BotonConectar.Content == "Conectar")
+                if ( BotonConectar.Content.Equals("Conectar"))
                 {
                     if (ComboPuerto.Text != "No hay puertos disponibles")
                     {
@@ -55,6 +53,14 @@ namespace CargaArduino2DataBase
                         PuertoSerial.ReadTimeout = (100);
                         PuertoSerial.Open();
                         ListaDeEventosSeriales.Clear();
+                        Monitor.Enter(ReporteDeComandos);
+                        ReporteDeComandos.Clear();
+                        Monitor.Exit(ReporteDeComandos);
+                        //Monitor.Enter(NumRegSend);
+                        //NumRegSend = 0;
+                        //Monitor.Exit(NumRegSend);
+                        NumRegSend = 0;
+                        NumeroDeRegistrosEnviados.Text = NumRegSend.ToString();
                         PuertoSerial.DataReceived += PuertoSerial_DataReceived;
                         BotonConectar.Content = "Desconectar";
                     }
@@ -68,31 +74,55 @@ namespace CargaArduino2DataBase
             }
             catch (System.Exception _Error)
             {
+                PuertoSerial.Close();
                 MessageBox.Show(_Error.Message.ToString());
             }
         }
 
         private void PuertoSerial_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadLine();
-            //var Comandos = indata.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
-            var Trimmed = indata.Trim();
-            if (Trimmed.Length > 0 && Trimmed.StartsWith("{"))
+            try
             {
-                try
+                SerialPort sp = (SerialPort)sender;
+                string indata = sp.ReadLine();
+                var Trimmed = indata.Trim();
+                if (Trimmed.Length > 0 && Trimmed.StartsWith("{"))
                 {
-                    Monitor.Enter(ListaDeEventosSeriales);
-                    ListaDeEventosSeriales.Add(Trimmed);
-                    Monitor.Exit(ListaDeEventosSeriales);
-                    var CmS = JsonConvert.DeserializeObject<ComandoArduino>(Trimmed);
-                    Monitor.Enter(ListaDeEventos);
-                    ListaDeEventos.Add(CmS);
-                    Monitor.Exit(ListaDeEventos);
+                    var NuevoRegistro = new DataComplete();
+                    try
+                    {
+                        NuevoRegistro.RecivedData = Trimmed;
+                        var CmS = JsonConvert.DeserializeObject<ComandoArduino>(Trimmed);
+                        NuevoRegistro.ArduinoComand = CmS;
+                        var MySqlCon = new AdmSQL(CmS.IP, CmS.DB, CmS.User, CmS.Pass);
+                        switch (CmS.CMD)
+                        {
+                            case "Insert":
+                                var Infodata = CmS.Data.Replace("\\\"", "\"");
+                                var Info2Load = JsonConvert.DeserializeObject<SortedList<String, String>>(Infodata);
+                                var ResponseSql = MySqlCon.InsertaSQLSpecificColums(CmS.Table, Info2Load);
+                                CmS.Data = Infodata.Replace("@ServerDT", DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+                                NuevoRegistro.Error = ResponseSql;
+                                //What i need to do here to put NumRegSend++, without get Miscount error
+                                //Dispatcher.BeginInvoke(new Action(() =>
+                                //{
+                                //    NumeroDeRegistrosEnviados.Text = (ReporteDeComandos.Count+1).ToString();
+                                //}),9);//Normal priority
+                                break;
+                        }
+                    }
+                    catch (Exception MyExcepcion)
+                    {
+                        NuevoRegistro.Error = MyExcepcion.Message.ToString();
+                    }
+                    Monitor.Enter(ReporteDeComandos);
+                    ReporteDeComandos.Add(NuevoRegistro);
+                    Monitor.Exit(ReporteDeComandos);
                 }
-                catch
-                {
-                }
+            }
+            catch
+            {
+
             }
 
         }
@@ -114,8 +144,25 @@ namespace CargaArduino2DataBase
             ComboPuerto.ItemsSource = PuertosDisponibles;
             ComboPuerto.SelectedIndex = 0;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var Detalle = new DatosYComandos(ReporteDeComandos);
+            Detalle.ShowDialog();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            PuertoSerial.Close();
+            MessageBox.Show("Que tengas un excelente día");
+        }
     }
-    class ComandoArduino
+    public class ComandoArduino
     {
         private string dB = "";
         private string user = "";
@@ -132,5 +179,12 @@ namespace CargaArduino2DataBase
         public string Table { get => table; set => table = value; }
         public string Data { get => data; set => data = value; }
     }
+    public class DataComplete
+    {
+        public string   RecivedData { get; set; } = "";
+        public ComandoArduino ArduinoComand { get; set; } = new ComandoArduino();
+        public string Error { get; set; } = "";
+    }
+ 
 }
 

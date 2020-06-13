@@ -1,0 +1,39 @@
+﻿<Window x:Class="CargaArduino2DataBase.DatosYComandos"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CargaArduino2DataBase"
+        mc:Ignorable="d"
+        Title="DatosYComandos" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Rectangle Fill="Black"></Rectangle>
+            <Label HorizontalAlignment="Center" Foreground="Wheat" FontSize="18">Vista de detalle de los comandos enviados </Label>
+        </Grid>
+        <DataGrid Grid.Row="1" Margin="10" Name="TablaDeRegistrosObtenidos" CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="True"
+                  CanUserSortColumns="True"
+                  ></DataGrid>
+        <Grid  Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Name="BotonSalir" Margin="0,5,5,0" Click="BotonSalir_Click">Salir</Button>
+            <Label HorizontalAlignment="Right" Grid.Column="1">Exportar a:</Label>
+            <RadioButton GroupName="A" VerticalAlignment="Center" Grid.Column="2" Name="RadioCSV">Texto separado por comillas</RadioButton>
+            <RadioButton IsChecked="True" GroupName="A" VerticalAlignment="Center" Grid.Column="3" Name="RadioExcel">Documento excel</RadioButton>
+            <Button Grid.Column="4" Margin="5,5,0,0" Name="BotonExportar" Click="BotonExportar_Click">Exportar</Button>
+        </Grid>
+    </Grid>
+</Window>

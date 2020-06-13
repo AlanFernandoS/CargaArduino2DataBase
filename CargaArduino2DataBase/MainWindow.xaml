@@ -1,4 +1,4 @@
-﻿            <Window x:Class="CargaArduino2DataBase.MainWindow"
+﻿<Window x:Class="CargaArduino2DataBase.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,17 +6,16 @@
         xmlns:local="clr-namespace:CargaArduino2DataBase"
         xmlns:IoP="clr-namespace:System.IO.Ports;assembly=System"
         mc:Ignorable="d" 
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
+        Title="Carga de un dispositivo a una base de datos" 
+        Height="147" Width="Auto" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Background="Black" >
-            <Label Foreground="Wheat" HorizontalAlignment="Center">Servicio de carga desde dispositivo a una base de datos</Label>
+            <Label Foreground="Wheat" HorizontalAlignment="Center" Content="Servicio de carga desde un dispositivo a una base de datos, creado por Alan Fernando Santacruz Rodríguez"/>
         </Grid>
         <Grid Grid.Row="1" Margin="10,5,10,5">
             <Grid.ColumnDefinitions>
@@ -29,13 +28,13 @@
             </Grid.ColumnDefinitions>
             <Label>Puerto:</Label>
             <ComboBox  Grid.Column="1" Name="ComboPuerto" Margin="5,0,5,0"></ComboBox>
-            <Button  Grid.Column="2" Name="BotonActualizar" Margin="5,0,5,0">Actualizar</Button>
+            <Button  Grid.Column="2" Name="BotonActualizar" Margin="5,0,5,0" Width="70">Actualizar</Button>
             <Label Grid.Column="3">Velocidad</Label>
             <ComboBox  Grid.Column="4" Name="ComboVelocidad" Margin="5,0,5,0" SelectedIndex="0">
                 <ComboBoxItem>115200</ComboBoxItem>
                 <ComboBoxItem>9600</ComboBoxItem>
             </ComboBox>
-            <Button Name="BotonConectar" Grid.Column="5">Conectar</Button>
+            <Button Name="BotonConectar" Grid.Column="5" Width="100">Conectar</Button>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -43,12 +42,14 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Label>Tiempo de actualización para la lectura de la base de datos</Label>
-            <Slider Grid.Column="1" Minimum="50" Maximum="5000"></Slider>
-            
-        </Grid>
-        <UniformGrid Grid.Row="3" Columns="2"/>
 
+        </Grid>
+        <UniformGrid Grid.Row="2" Columns="4" Margin="10,5,10,5">
+            <Button Click="Button_Click"  Content="Salir"/>
+            <Label HorizontalAlignment="Right" Content="Registros enviados:" Visibility="Hidden"/>
+            <TextBox Margin="0,0,10,0" x:Name="NumeroDeRegistrosEnviados" Visibility="Hidden"/>
+            <Button Click="Button_Click_1" Content="Ver detalle"/>
+        </UniformGrid>
 
 
     </Grid>
