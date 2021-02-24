@@ -1,21 +1,26 @@
-﻿<Window x:Class="CargaArduino2DataBase.MainWindow"
+﻿<ma:MetroWindow x:Class="CargaArduino2DataBase.MainWindow"
+        xmlns:ma="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CargaArduino2DataBase"
         xmlns:IoP="clr-namespace:System.IO.Ports;assembly=System"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"  
         Title="Carga de un dispositivo a una base de datos" 
-        Height="147" Width="Auto" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing">
+        TitleAlignment="Center"
+        Height="136" Width="525"  
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="CanResizeWithGrip" 
+        Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Background="Black" >
-            <Label Foreground="Wheat" HorizontalAlignment="Center" Content="Servicio de carga desde un dispositivo a una base de datos, creado por Alan Fernando Santacruz Rodríguez"/>
+        <Grid Background="DarkBlue" >
+            <Label Foreground="White" HorizontalAlignment="Center" Content="Ardu2SQl. created by CAPTis, un mejor futuro solo es mejor juntos"/>
         </Grid>
         <Grid Grid.Row="1" Margin="10,5,10,5">
             <Grid.ColumnDefinitions>
@@ -42,7 +47,6 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
         </Grid>
         <UniformGrid Grid.Row="2" Columns="4" Margin="10,5,10,5">
             <Button Click="Button_Click"  Content="Salir"/>
@@ -50,7 +54,5 @@
             <TextBox Margin="0,0,10,0" x:Name="NumeroDeRegistrosEnviados" Visibility="Hidden"/>
             <Button Click="Button_Click_1" Content="Ver detalle"/>
         </UniformGrid>
-
-
     </Grid>
-</Window>
+</ma:MetroWindow>

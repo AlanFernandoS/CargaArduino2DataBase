@@ -18,12 +18,13 @@ using System.IO.Ports;
 using System.Timers;
 using System.Threading;
 using Newtonsoft.Json;
+using MahApps.Metro.Controls;
 namespace CargaArduino2DataBase
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         SerialPort PuertoSerial = new SerialPort();
         List<ComandoArduino> ListaDeEventos = new List<ComandoArduino>();
@@ -56,9 +57,6 @@ namespace CargaArduino2DataBase
                         Monitor.Enter(ReporteDeComandos);
                         ReporteDeComandos.Clear();
                         Monitor.Exit(ReporteDeComandos);
-                        //Monitor.Enter(NumRegSend);
-                        //NumRegSend = 0;
-                        //Monitor.Exit(NumRegSend);
                         NumRegSend = 0;
                         NumeroDeRegistrosEnviados.Text = NumRegSend.ToString();
                         PuertoSerial.DataReceived += PuertoSerial_DataReceived;
@@ -103,11 +101,12 @@ namespace CargaArduino2DataBase
                                 var ResponseSql = MySqlCon.InsertaSQLSpecificColums(CmS.Table, Info2Load);
                                 CmS.Data = Infodata.Replace("@ServerDT", DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
                                 NuevoRegistro.Error = ResponseSql;
-                                //What i need to do here to put NumRegSend++, without get Miscount error
-                                //Dispatcher.BeginInvoke(new Action(() =>
-                                //{
-                                //    NumeroDeRegistrosEnviados.Text = (ReporteDeComandos.Count+1).ToString();
-                                //}),9);//Normal priority
+                                break;
+                            case "Get":
+                                //Data was the value of conditions
+                                var ConditionsData = CmS.Data.Replace("\\\"", "\"");
+                                var Info2Consult = JsonConvert.DeserializeObject<SortedList<String, List<String>>>(ConditionsData);
+                                var ConsultSql = MySqlCon.ArmaConSQLColumnas(CmS.Table,Info2Consult["Col"],);
                                 break;
                         }
                     }
@@ -162,6 +161,7 @@ namespace CargaArduino2DataBase
             MessageBox.Show("Que tengas un excelente día");
         }
     }
+
     public class ComandoArduino
     {
         private string dB = "";
@@ -179,6 +179,9 @@ namespace CargaArduino2DataBase
         public string Table { get => table; set => table = value; }
         public string Data { get => data; set => data = value; }
     }
+
+   
+
     public class DataComplete
     {
         public string   RecivedData { get; set; } = "";

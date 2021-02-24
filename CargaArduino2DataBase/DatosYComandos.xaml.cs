@@ -1,34 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Data.Common;
-using System.Data.SqlTypes;
 using System.Data;
 using System.Reflection;
 using SpreadsheetLight;
-using SpreadsheetLight.Charts;
-using System.Resources;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
-using Newtonsoft;
 using System.IO;
+using MahApps.Metro.Controls;
+
 namespace CargaArduino2DataBase
 {
     /// <summary>
     /// Interaction logic for DatosYComandos.xaml
     /// </summary>
-    public partial class DatosYComandos : Window
+    public partial class DatosYComandos : MetroWindow
     {
         List<MuestraDeDatosOnGrid> ListaDeComandosParaExportar = new List<MuestraDeDatosOnGrid>();
         List<SortedList<String, String>> Data2Show = new List<SortedList<String, String>>();
